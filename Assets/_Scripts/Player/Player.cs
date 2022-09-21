@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,11 @@ public class Player : MonoBehaviour
     [SerializeField] float climbSpeed = 5f;
     [SerializeField] Vector2 deathKick = new Vector2(25f, 25f);
 
+    [Header("Shooting")]
+    [SerializeField] GameObject shootPoint;
+    [SerializeField] GameObject arrow;
+    [SerializeField] float shotingRate = 0.2f;
+
     // State
     bool isAlive = true;
     private bool isOnGround = true;
@@ -21,6 +27,7 @@ public class Player : MonoBehaviour
     private CapsuleCollider2D bodyCollider;
     private BoxCollider2D feetCollider;
     private float gravityScaleAtStart;
+    private bool canShot = true;
 
     void Start()
     {
@@ -39,6 +46,24 @@ public class Player : MonoBehaviour
         FlipSprite();
         ClimbLadder();
         Die();
+        Shoot();
+    }
+
+    private void Shoot()
+    {
+        if (CrossPlatformInputManager.GetButtonDown("Fire1") && canShot)
+        {
+            StartCoroutine(Shooting());
+        }
+    }
+
+    IEnumerator Shooting()
+    {
+        canShot = false;
+        animator.SetTrigger("shoot");
+        Instantiate(arrow, shootPoint.transform.position, shootPoint.transform.rotation);
+        yield return new WaitForSeconds(shotingRate);
+        canShot = true;
     }
 
     private void Run()
