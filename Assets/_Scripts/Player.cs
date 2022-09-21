@@ -16,7 +16,10 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject shootPoint;
     [SerializeField] GameObject arrow;
     [SerializeField] float shotingRate = 0.2f;
+
+    [Header("Sound")]
     [SerializeField] AudioClip shootSound;
+    [SerializeField] AudioClip dieSound;
 
     // State
     bool isAlive = true;
@@ -54,6 +57,7 @@ public class Player : MonoBehaviour
     {
         if (CrossPlatformInputManager.GetButtonDown("Fire1") && canShot)
         {
+            SoundManager.PlaySound(shootSound);
             StartCoroutine(Shooting());
         }
     }
@@ -128,6 +132,7 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
+        SoundManager.PlaySound(dieSound);
         isAlive = false;
         animator.SetTrigger("die");
     }

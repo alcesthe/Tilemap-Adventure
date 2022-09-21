@@ -12,5 +12,11 @@ public class StartUI : MonoBehaviour
         {
             Loader.Load(Loader.Scene.Level_1);
         });
+
+        // Start Button
+        transform.Find("Quit Button").GetComponent<Button>().onClick.AddListener(delegate
+        {
+            Loader.LoadExit();
+        });
     }
 }

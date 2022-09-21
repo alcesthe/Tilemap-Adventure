@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class CoinPickup : MonoBehaviour
 {
-    [SerializeField] float value = 1;
+    [SerializeField] int value = 1;
+    [SerializeField] AudioClip coinSound;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameManager.instance.coinCollected += 5;
+        SoundManager.PlaySound(coinSound);
+        GameManager.instance.coinCollected += value;
         Destroy(gameObject);
     }
 }
