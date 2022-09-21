@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject shootPoint;
     [SerializeField] GameObject arrow;
     [SerializeField] float shotingRate = 0.2f;
+    [SerializeField] AudioClip shootSound;
 
     // State
     bool isAlive = true;
@@ -45,7 +46,7 @@ public class Player : MonoBehaviour
         Jump();
         FlipSprite();
         ClimbLadder();
-        Die();
+        Hit();
         Shoot();
     }
 
@@ -104,15 +105,31 @@ public class Player : MonoBehaviour
             rigidbody2D.velocity += jumpVelocity;
         }
     }
-
-    private void Die()
+    private void Hit()
     {
         if (bodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemy", "Hazards")))
         {
-            isAlive = false;
-            animator.SetTrigger("die");
-            GetComponent<Rigidbody2D>().velocity = deathKick;
+            StartCoroutine(ProcessHit());
+            if (!GameManager.instance.isAlive)
+            {
+                Die();
+            }
         }
+    }
+
+    IEnumerator ProcessHit()
+    {
+        bodyCollider.enabled = false;
+        GetComponent<Rigidbody2D>().velocity = deathKick;
+        GameManager.instance.playerHealth--;
+        yield return new WaitForSeconds(2);
+        bodyCollider.enabled = true;
+    }
+
+    private void Die()
+    {
+        isAlive = false;
+        animator.SetTrigger("die");
     }
 
     private void FlipSprite()
@@ -123,4 +140,5 @@ public class Player : MonoBehaviour
             transform.localScale = new Vector2(Mathf.Sign(rigidbody2D.velocity.x), 1f);
         }
     }
+
 }

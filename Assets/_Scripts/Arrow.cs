@@ -16,6 +16,7 @@ public class Arrow : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
         player = FindObjectOfType<Player>();
 
+        transform.localScale = new Vector2(player.transform.localScale.x, 1);
         rigidbody2D.velocity = new Vector2(lauchForce * player.transform.localScale.x, 0);
     }
 
@@ -24,6 +25,12 @@ public class Arrow : MonoBehaviour
         if (boxCollider2D.IsTouchingLayers(LayerMask.GetMask("Ground", "Enemy")))
         {
             Destroy(gameObject);
+
+            // Bad code
+            var enemy = collision.GetComponent<Enemy>();
+            if (enemy) {
+                enemy.Hit();
+            }
         }
     }
 }
